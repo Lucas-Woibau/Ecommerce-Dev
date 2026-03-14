@@ -16,17 +16,29 @@ namespace EcommerceDev.Core.Entities
             Updates = [];
         }
 
-        public Guid IdCustomer { get; set; }
-        public Customer Customer { get; set; }
-        public DateTime? ConfirmationDate { get; set; }
-        public DateTime? ShippingDate { get; set; }
-        public OrderStatus Status { get; set; }
-        public Guid DeliveryAddressId { get; set; }
-        public CustomerAddress DeliveryAddress { get; set; }
-        public decimal ShippingPrice { get; set; }
-        public decimal TotalProductsPrice { get; set; }
-        public List<OrderItem> Items { get; set; }
-        public List<OrderUpdate> Updates { get; set; }
+        public Guid IdCustomer { get; private set; }
+        public Customer Customer { get; private set; }
+        public DateTime? ConfirmationDate { get; private set; }
+        public DateTime? ShippingDate { get; private set; }
+        public OrderStatus Status { get; private set; }
+        public Guid DeliveryAddressId { get; private set; }
+        public CustomerAddress DeliveryAddress { get; private set; }
+        public decimal ShippingPrice { get; private set; }
+        public decimal TotalProductsPrice { get; private set; }
+        public List<OrderItem> Items { get; private set; }
+        public List<OrderUpdate> Updates { get; private set; }
+
+        public void MarkAsConfirmed()
+        {
+            if(Status != OrderStatus.Created)
+            {
+                Console.WriteLine("[Order] Order is in invalid state for confirmation");
+
+                throw new Exception("rder is in invalid state for confirmation");
+            }
+
+            Status = OrderStatus.Confirmed;
+        }
 
     }
 }

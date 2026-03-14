@@ -1,5 +1,6 @@
 ﻿using EcommerceDev.Core.Entities;
 using EcommerceDev.Core.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace EcommerceDev.Infrastructure.Persistence.Repositories
 {
@@ -12,12 +13,27 @@ namespace EcommerceDev.Infrastructure.Persistence.Repositories
             _context = context;
         }
 
-        public async Task<Guid> Create(Order order)
+        public async Task<Guid> CreateAsync(Order order)
         {
             await _context.Orders.AddAsync(order);
             await _context.SaveChangesAsync();
 
             return order.Id;
+        }
+
+        public async Task<Order?> GetByIdAsync(Guid id)
+        {
+            return await _context.Orders
+                .AsNoTracking()
+                .Include(o => o.Items)
+                    .ThenInclude(i => i.Product)
+                .SingleOrDefaultAsync(o => o.Id == id);
+        }
+
+        public async Task UpdateAsync(Order order)
+        {
+            _context.Orders.Update(order);
+            await _context.SaveChangesAsync();
         }
     }
 }

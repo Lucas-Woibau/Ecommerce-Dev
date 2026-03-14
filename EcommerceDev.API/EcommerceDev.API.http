@@ -1,10 +1,8 @@
 @EcommerceDev_API_HostAddress = http://localhost:5020
-@productId = 
-@categoryId=
-@customerId=
-
-GET {{EcommerceDev_API_HostAddress}}/weatherforecast/
-Accept: application/json
+@customerId = 15c5a362-90e9-4a53-bd34-e2437d4e920e
+@addressId = 416e1549-c8c5-4b71-be87-4caecf113f1b
+@categoryId = 47cadc2b-4168-489b-99a1-e4057f465060
+@productId = 9c6fcfcb-4d5e-437b-8eee-689e5d3161e8
 
 ###
 
@@ -17,4 +15,58 @@ Content-Type: application/json
   "phone": "12345678910",
   "birthDate": "2001-02-17",
   "document": "123321"
+}
+
+###
+
+POST {{EcommerceDev_API_HostAddress}}/api/customers/{{customerId}}/addresses
+Content-Type: application/json
+
+{
+  "idCustomer": "07d762f1-f424-4c87-891c-0b031b0afdac",
+  "recipientName": "Lucas Maciel Woibau",
+  "addressLine1": "Rua das Flores, 123",
+  "addressLine2": "Apto 201",
+  "zipCode": "29750-000",
+  "district": "Centro",
+  "state": "ES",
+  "country": "Brasil",
+  "city": "Pancas"
+}
+
+###
+
+POST {{EcommerceDev_API_HostAddress}}/api/customers
+Content-Type: application/json
+{
+  "Title": "Tecnologia",
+  "Subcategory": "Computador"
+}
+
+###
+
+POST {{EcommerceDev_API_HostAddress}}/api/products
+Content-Type: application/json
+{
+  "title": "Tecnologia",
+  "description": "Computador",
+  "price": 5000,
+  "brand": "Avell",
+  "quantity": 5,
+  "idCategory": "{{categoryId}}"
+}
+
+###
+
+POST {{EcommerceDev_API_HostAddress}}/api/orders
+Content-Type: application/json
+{
+  "idCustomer": "{{customerId}}",
+  "items": [
+    {
+      "idProduct": "{{productId}}",
+      "quantity": 2
+    }
+  ],
+  "deliveryAddressId": "{{addressId}}"
 }

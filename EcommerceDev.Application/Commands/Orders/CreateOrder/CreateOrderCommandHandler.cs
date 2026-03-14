@@ -1,16 +1,20 @@
 ﻿using EcommerceDev.Application.Common;
 using EcommerceDev.Core.Entities;
+using EcommerceDev.Core.Events;
 using EcommerceDev.Core.Repositories;
+using EcommerceDev.Infrastructure.Messaging;
 
 namespace EcommerceDev.Application.Commands.Orders.CreateOrder
 {
     public class CreateOrderCommandHandler : IHandler<CreateOrderCommand, ResultViewModel<Guid>>
     {
         private readonly IOrderRepository _repository;
+        private readonly IEventPublisher _eventPublisher;
 
-        public CreateOrderCommandHandler(IOrderRepository orderRepository)
+        public CreateOrderCommandHandler(IOrderRepository orderRepository, IEventPublisher eventPublisher)
         {
             _repository = orderRepository;
+            _eventPublisher = eventPublisher;
         }
 
         public async Task<ResultViewModel<Guid>> HandleAsync(CreateOrderCommand request)
@@ -23,7 +27,11 @@ namespace EcommerceDev.Application.Commands.Orders.CreateOrder
                 request.Items.Select(i => 
                 new OrderItem(i.IdProduct, i.Quantity, 5)).ToList());
 
-            await _repository.Create(order);
+            await _repository.CreateAsync(order);
+
+            var @event = new OrderCreatedEvent(order.Id);
+
+            await _eventPublisher.PublishAsync(@event);
 
             return ResultViewModel<Guid>.Success(order.Id);
         }
